@@ -1,0 +1,19 @@
+body {
+  padding-top: 50px;
+}
+.starter-template {
+  padding: 40px 15px;
+  text-align: center;
+}
+
+
+#editorDiv {
+    height: 100%;
+    width: 20%;
+}
+
+#directions {
+    height: 100%;
+    width: 20%;
+    float: right;
+}

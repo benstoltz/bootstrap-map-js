@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="../bootstrap_v3/docs-assets/ico/favicon.png">
+
+    <title>Starter Template for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="starter-template.css" rel="stylesheet">
+
+    <!-- Bootstrap-map-js -->
+      <!--<link rel="stylesheet" href="http://js.arcgis.com/3.10/js/dojo/dijit/themes/claro/claro.css">-->
+    <link rel="stylesheet" type="text/css" href="http://js.arcgis.com/3.10/js/esri/css/esri.css">
+    <link rel="stylesheet" type="text/css" href="../../src/css/bootstrapmap.css">   
+    <style type="text/css">
+      #mapDiv {
+        min-height: 100px; 
+        max-height: 1000px; 
+      }
+    </style>
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="../bootstrap_v3/docs-assets/js/html5shiv.js"></script>
+      <script src="../bootstrap_v3/docs-assets/js/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body class="claro">
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Project name</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+
+    <!--Main section -->
+
+    <main class="container">
+
+        <div id="directions"></div>
+        <div id = "templateDiv"></div>
+        <div id = 'editorDiv'></div>
+
+      <div class="starter-template">
+        <h1>Bootstrap starter template</h1>
+        <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
+      </div>
+
+
+
+
+      <!-- Bootstrap-map-js -->
+      <div id="mapDiv"></div>
+
+
+
+
+
+    </main><!-- /.container -->
+
+    <!-- Main section end -->
+
+
+
+
+    <script type="text/javascript">
+      var package_path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+      var dojoConfig = {
+        // The location.pathname.replace() logic below may look confusing but all its doing is
+        // enabling us to load the api from a CDN and load local modules from the correct location.
+        packages: [ {
+          name: "application",
+          location: package_path + '../../../src/js'
+        } ]
+      };
+    </script>
+    <script src="http://js.arcgis.com/3.10"></script>
+
+
+
+
+
+    <!-- ESRI JS application code -->
+
+    <script>
+        require(["application/bootstrapmap",
+                 'esri/toolbars/edit',
+                 'esri/dijit/Directions',
+
+                 'esri/layers/FeatureLayer',
+
+
+
+                 "esri/dijit/editing/Editor",
+                 "esri/dijit/editing/TemplatePicker",
+                 "dojo/domReady!"
+
+                ],
+          function (BootstrapMap, Edit, Directions, FeatureLayer, Editor, TemplatePicker) {
+            // Get a reference to the ArcGIS Map class
+              var incidentLayer;
+              var map;
+              map = BootstrapMap.create("mapDiv", {
+                  basemap: "streets",
+                  center: [-80.8395259, 35.2031535],
+                  zoom: 11,
+                  scrollWheelZoom: false
+              });
+
+              dojo.connect(map, 'onLayersAddResult', initEditor);
+              //map.on('layers-add-result', initEditor);  //Weirdly breaks everythingggggg
+
+              var directions = new Directions({
+                  map: map
+              },"directions");
+              directions.startup();
+
+
+              incidentLayer = new FeatureLayer("http://csc-training7l.esri.com:6080/arcgis/rest/services/PointBarriers2_managed/FeatureServer/0", {
+                 id: 'Incidents',
+                 mode: esri.layers.FeatureLayer.MODE_ONDEMAND,
+                 outFields: ['*']
+              });
+              map.addLayers([incidentLayer]);
+
+              function initEditor(results) {
+
+                  var featureLayer = results[0].layer;
+
+
+
+                  var templatePicker = new TemplatePicker({
+                      featureLayers: [featureLayer],
+                      rows: 'auto',
+                      groupingEnabled: true,
+                      columns: 2
+                  }, 'templateDiv');
+                  templatePicker.startup();
+
+
+
+                  var layerInfo = [{
+                      featureLayer: featureLayer,
+                      showAttachments: false,
+                      showDeleteButton: false,
+                      fieldInfos: [
+                          {'fieldName': 'event_type', 'label': 'Incident'},
+                          {'fieldName': 'services_requested', 'label': 'Emergency Services'},
+                          {'fieldName': 'event_description', 'label': 'Incident Description'},
+                          {'fieldName': 'number_injured', 'label': 'Number of Injured'},
+                          {'fieldName': 'reporter_contact', 'label': 'Contact Number'},
+                          {'fieldName': 'severity', 'label': 'Severity of Incident'}
+                      ]
+                  }];
+
+                  var settings = {
+                      map: map,
+                      templatePicker: templatePicker,
+                      layerInfos: layerInfo
+                  };
+
+                  var params = {settings: settings};
+
+
+                  var editorWidget = new Editor(params, 'editorDiv');
+                  editorWidget.startup();
+                  map.infoWindow.resize(295,245);
+              }
+
+
+
+
+        });
+    </script>
+
+
+    <!-- ESRI code end -->
+
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+  </body>
+</html>
