@@ -17,15 +17,9 @@
     <link href="starter-template.css" rel="stylesheet">
 
     <!-- Bootstrap-map-js -->
-      <!--<link rel="stylesheet" href="http://js.arcgis.com/3.10/js/dojo/dijit/themes/claro/claro.css">-->
+      <link rel="stylesheet" href="http://js.arcgis.com/3.10/js/dojo/dijit/themes/nihilo/nihilo.css">
     <link rel="stylesheet" type="text/css" href="http://js.arcgis.com/3.10/js/esri/css/esri.css">
-    <link rel="stylesheet" type="text/css" href="../../src/css/bootstrapmap.css">   
-    <style type="text/css">
-      #mapDiv {
-        min-height: 100px; 
-        max-height: 1000px; 
-      }
-    </style>
+    <link rel="stylesheet" type="text/css" href="../../src/css/bootstrapmap.css">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -34,47 +28,25 @@
     <![endif]-->
   </head>
 
-  <body class="claro">
+  <body class="nihilo">
 
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Project name</a>
-        </div>
-        <div class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-    </nav>
 
 
     <!--Main section -->
 
     <main class="container">
 
+        <div id="mapDiv"></div>
         <div id="directions"></div>
         <div id = "templateDiv"></div>
         <div id = 'editorDiv'></div>
 
-      <div class="starter-template">
-        <h1>Bootstrap starter template</h1>
-        <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
-      </div>
 
 
 
 
       <!-- Bootstrap-map-js -->
-      <div id="mapDiv"></div>
+
 
 
 
@@ -120,7 +92,7 @@
                  "dojo/domReady!"
 
                 ],
-          function (BootstrapMap, Edit, Directions, FeatureLayer, Editor, TemplatePicker) {
+          function (BootstrapMap, Edit, Directions, FeatureLayer, Editor, TemplatePicker, EditTools) {
             // Get a reference to the ArcGIS Map class
               var incidentLayer;
               var map;
@@ -140,7 +112,7 @@
               directions.startup();
 
 
-              incidentLayer = new FeatureLayer("http://csc-training7l.esri.com:6080/arcgis/rest/services/PointBarriers2_managed/FeatureServer/0", {
+              incidentLayer = new FeatureLayer("http://supt00538.esri.com:6080/arcgis/rest/services/input/InPoints2/FeatureServer/0", {
                  id: 'Incidents',
                  mode: esri.layers.FeatureLayer.MODE_ONDEMAND,
                  outFields: ['*']
@@ -168,11 +140,11 @@
                       showAttachments: false,
                       showDeleteButton: false,
                       fieldInfos: [
-                          {'fieldName': 'event_type', 'label': 'Incident'},
-                          {'fieldName': 'services_requested', 'label': 'Emergency Services'},
-                          {'fieldName': 'event_description', 'label': 'Incident Description'},
-                          {'fieldName': 'number_injured', 'label': 'Number of Injured'},
-                          {'fieldName': 'reporter_contact', 'label': 'Contact Number'},
+                          {'fieldName': 'eventtype', 'label': 'Incident'},
+                          {'fieldName': 'servicesrequested', 'label': 'Emergency Services'},
+                          {'fieldName': 'eventdescription', 'label': 'Incident Description'},
+                          {'fieldName': 'numberinjured', 'label': 'Number of Injured'},
+                          {'fieldName': 'reportcontact', 'label': 'Contact Number'},
                           {'fieldName': 'severity', 'label': 'Severity of Incident'}
                       ]
                   }];

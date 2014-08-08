@@ -7,13 +7,37 @@ body {
 }
 
 
-#editorDiv {
-    height: 100%;
-    width: 20%;
+#templateDiv {
+    position: absolute;
+    top: 45%;
+    left: 1em;
 }
 
 #directions {
+    position: absolute;
+    top: 1em;
+    right: 1em;
     height: 100%;
-    width: 20%;
-    float: right;
+    max-height: 100%;
+    max-width: 20%;
+    overflow: auto;
+    padding-bottom: 35px;
+
+}
+
+#directions .esriRoutes {
+    overflow: auto;
+}
+
+#mapDiv {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+
+}
+
+#mapDiv .container {
+    min-height: 100%;
 }
